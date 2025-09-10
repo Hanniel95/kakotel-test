@@ -156,10 +156,11 @@ class _TaskPageState extends State<TaskPage> {
     final titleController = TextEditingController();
     final descController = TextEditingController();
     TaskPriority priority = TaskPriority.medium;
+    final taskCubit = context.read<TaskCubit>();
 
     await showDialog(
       context: context,
-      builder: (context) {
+      builder: (dialogContext) {
         return AlertDialog(
           title: const Text('Add Task'),
           content: Column(
@@ -191,18 +192,18 @@ class _TaskPageState extends State<TaskPage> {
           ),
           actions: [
             TextButton(
-              onPressed: () => Navigator.of(context).pop(),
+              onPressed: () => Navigator.of(dialogContext).pop(),
               child: const Text('Cancel'),
             ),
             FilledButton(
               onPressed: () async {
                 if (titleController.text.trim().isEmpty) return;
-                await context.read<TaskCubit>().addTask(
+                await taskCubit.addTask(
                       title: titleController.text.trim(),
                       description: descController.text.trim(),
                       priority: priority,
                     );
-                if (context.mounted) Navigator.of(context).pop();
+                if (dialogContext.mounted) Navigator.of(dialogContext).pop();
               },
               child: const Text('Add'),
             ),
